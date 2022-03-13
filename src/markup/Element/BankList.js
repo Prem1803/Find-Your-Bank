@@ -7,7 +7,12 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Link } from "react-router-dom";
-
+import {
+  isFavoriteBank,
+  addToFavoriteBanks,
+  removeFromFavoriteBanks,
+  getCityFavoriteBanks,
+} from "../../utils/favoriteBankUtils";
 const BankList = ({ data, setData, favoritePage, city }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -33,6 +38,14 @@ const BankList = ({ data, setData, favoritePage, city }) => {
     },
   ];
 
+  const [favorite, setFavorite] = useState(false);
+  useEffect(() => {
+    if (favoritePage) {
+      setData(getCityFavoriteBanks(city));
+    } else {
+      setData(data);
+    }
+  }, [favorite]);
   return (
     <>
       {data.length === 0 ? (
@@ -66,6 +79,29 @@ const BankList = ({ data, setData, favoritePage, city }) => {
                     >
                       {columns.map((column, index) => {
                         const value = row[column.id];
+                        if (column.id === "favorite") {
+                          return (
+                            <TableCell key={column.id} align={column.align}>
+                              {isFavoriteBank(row) ? (
+                                <i
+                                  className="fa-solid fa-heart"
+                                  onClick={() => {
+                                    setFavorite(!favorite);
+                                    removeFromFavoriteBanks(row);
+                                  }}
+                                />
+                              ) : (
+                                <i
+                                  className="fa-regular fa-heart"
+                                  onClick={() => {
+                                    setFavorite(!favorite);
+                                    addToFavoriteBanks(row);
+                                  }}
+                                />
+                              )}
+                            </TableCell>
+                          );
+                        }
 
                         return (
                           <TableCell key={column.id} align={column.align}>
