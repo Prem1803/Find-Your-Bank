@@ -8,7 +8,7 @@ const reducer = combineReducers({
 });
 
 const initialState = {
-  banks: {},
+  banks: { cityBanks: {} },
 };
 
 const middleware = [thunk];
